@@ -9,6 +9,14 @@ class BrnoRentalsApp < Sinatra::Base
     JSON.generate(Offers.all)
   end
 
+  post '/like/:id' do
+    source_url = Base64.decode64(params[:id])
+    Offers.all.map! do |a|
+      a[:likes] += 1 if a[:source_url] == source_url
+      a
+    end
+  end
+
   get '/callback' do
     params
   end
