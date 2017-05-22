@@ -1,11 +1,15 @@
 class Offers
 require 'koala'
 require 'typhoeus'
+require 'yaml'
 
-  @@offers
+  @@offers = nil
 
   def self.all
-    @@offers ||= get_data
+    if @@offers == nil
+      @@offers ||= get_data
+      load_likes
+    end
     @@offers
   end
 
@@ -13,12 +17,29 @@ require 'typhoeus'
     #oauth.url_for_oauth_code
     #oauth = Koala::Facebook::OAuth.new(12345, "secret", 'https://guarded-brook-34964.herokuapp.com/callback')
     #Typhoeus.get("www.example.com", followlocation: true)
-    #binding.pry
     @@offers = get_data
   end
 
   def self.get_data
     mock_data
+  end
+
+  def self.save
+    likes = []
+    @@offers.each do |a|
+      x = {:id => a[:source_url], :likes => a[:likes]}
+      likes.push(x)
+    end
+    File.write('likes.yaml', likes.to_yaml)
+  end
+
+  def self.load_likes
+    likes = YAML.load_file('likes.yaml')
+    if @@offers.length >= likes.length
+      @@offers = @@offers.zip(likes).map { |f, s| f.merge(s) }
+    else
+      @@offers = likes.zip(offers).map { |f, s| f.merge(s) }
+    end
   end
 
   def self.mock_data
