@@ -3,6 +3,7 @@ require 'json'
 require 'pry'
 require 'offers'
 
+
 class BrnoRentalsApp < Sinatra::Base
 
   post '/like/*' do
