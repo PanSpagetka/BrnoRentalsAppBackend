@@ -20,7 +20,7 @@ require 'config'
     a.reject! {|p| p['message'].nil?}
     prices = a.map {|p| p['message'].scan(/\d+[,]*\d+.*Kč/).first }
     areas = a.map {|p| p['message'].scan(/\d+\s*m2|\d+\s*m\^2/).first }
-    dispozitions = a.map {|p| p['message'].scan(/(\d\+\d|\d\+kk)/).first}
+    dispozitions = a.map {|p| p['message'].scan(/(\d\+\d|\d\+kk)/).first&.first}
     urls = a.map {|p| "https://www.facebook.com/#{p['id']}" }
     attachments = a.map {|p| @graph.get_object("#{p['id']}/attachments")}
 
@@ -40,6 +40,7 @@ require 'config'
         photos
       end
     end
+
     urls.map! {|x| {:source_url => x}}
     prices.map! {|x| {:price => x}}
     areas.map! {|x| {:area => x}}
