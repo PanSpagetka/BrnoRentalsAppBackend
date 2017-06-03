@@ -50,7 +50,7 @@ require 'config'
     urls.zip(areas).map {|f, v| f.merge(v)}.
          zip(prices).map {|f, v| f.merge(v)}.
          zip(dispozitions).map {|f, v| f.merge(v)}.
-         zip(images).map {|f, v| f.merge(v)}
-
+         zip(images).map {|f, v| f.merge(v)}.
+         map{ |v| v.merge({:likes => 0})}
   end
 end

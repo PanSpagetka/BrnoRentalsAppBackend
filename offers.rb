@@ -12,7 +12,11 @@ require 'facebook'
       refresh
       load_likes
     end
-    refresh if Time.now > @@last_refresh + 5 * 60
+    if Time.now > @@last_refresh + 5 * 60
+      save
+      refresh
+      load_likes
+    end
     @@offers
   end
 
