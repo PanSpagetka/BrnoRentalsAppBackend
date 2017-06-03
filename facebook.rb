@@ -22,6 +22,8 @@ require 'config'
     areas = a.map {|p| p['message'].scan(/\d+\s*m2|\d+\s*m\^2/).first }
     dispozitions = a.map {|p| p['message'].scan(/(\d\+\d|\d\+kk)/).first&.first}
     urls = a.map {|p| "https://www.facebook.com/#{p['id']}" }
+    descriptions = a.map {|p| p['message'] }
+    titles = descriptions.map {|p| p.scan(/\A.*/).first.split(/[\.,\?]/).first}
     attachments = a.map {|p| @graph.get_object("#{p['id']}/attachments")}
 
     images = attachments.map do |pa|
@@ -46,11 +48,15 @@ require 'config'
     areas.map! {|x| {:area => x}}
     dispozitions.map! {|x| {:type => x}}
     images.map! {|x| {:images => x}}
+    titles.map! {|x| {:title => x}}
+    descriptions.map! {|x| {:description => x}}
 
     urls.zip(areas).map {|f, v| f.merge(v)}.
          zip(prices).map {|f, v| f.merge(v)}.
          zip(dispozitions).map {|f, v| f.merge(v)}.
          zip(images).map {|f, v| f.merge(v)}.
+         zip(titles).map {|f, v| f.merge(v)}.
+         zip(descriptions).map {|f, v| f.merge(v)}.
          map{ |v| v.merge({:likes => 0})}
   end
 end
